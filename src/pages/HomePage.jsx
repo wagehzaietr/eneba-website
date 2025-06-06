@@ -1,18 +1,30 @@
 // src/pages/HomePage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SidebarFilters from '../components/SidebarFilters';
 import GameGrid from '../components/GameGrid';
 import  games  from '../data/games';
-import  platforms  from '../data/platforms';
+import platforms  from '../data/platforms';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const HomePage = () => {
-  const [filteredGames, setFilteredGames] = useState(games);
+  const [filteredGames, setFilteredGames] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate API loading
+    const timer = setTimeout(() => {
+      handleFilter();
+      setLoading(false);
+    }, 800);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleFilter = () => {
     let result = [...games];
@@ -56,7 +68,7 @@ const HomePage = () => {
     setFilteredGames(games);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleFilter();
   }, [priceRange, selectedPlatforms, selectedCategories, searchQuery]);
 
@@ -74,22 +86,28 @@ const HomePage = () => {
         </button>
       </div>
       
-      <div className="flex flex-col md:flex-row gap-6">
-        {(showMobileFilters || window.innerWidth >= 768) && (
-          <SidebarFilters 
-            priceRange={priceRange}
-            setPriceRange={setPriceRange}
-            selectedPlatforms={selectedPlatforms}
-            setSelectedPlatforms={setSelectedPlatforms}
-            selectedCategories={selectedCategories}
-            setSelectedCategories={setSelectedCategories}
-            platforms={platforms}
-            resetFilters={resetFilters}
-          />
-        )}
-        
-        <GameGrid games={filteredGames} />
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <LoadingSpinner size="lg" />
+        </div>
+      ) : (
+        <div className="flex flex-col md:flex-row gap-6">
+          {(showMobileFilters || window.innerWidth >= 768) && (
+            <SidebarFilters 
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              selectedPlatforms={selectedPlatforms}
+              setSelectedPlatforms={setSelectedPlatforms}
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+              platforms={platforms}
+              resetFilters={resetFilters}
+            />
+          )}
+          
+          <GameGrid games={filteredGames} />
+        </div>
+      )}
     </div>
   );
 };

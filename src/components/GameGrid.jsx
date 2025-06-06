@@ -1,6 +1,7 @@
 // src/components/GameGrid.jsx
 import React from 'react';
 import GameCard from './GameCard';
+import LoadingSpinner from './LoadingSpinner';
 
 const GameGrid = ({ games }) => {
   return (

@@ -1,6 +1,7 @@
 // src/components/GameCard.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
+import LazyImage from './LazyImage';
 
 const GameCard = ({ game }) => {
   return (
@@ -9,11 +10,14 @@ const GameCard = ({ game }) => {
       className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow block"
     >
       <div className="relative">
-        <img 
+        <LazyImage 
           src={game.image} 
           alt={game.title} 
-          className="w-full h-48 object-cover"
+          className="w-full h-48"
+          spinnerSize="md"
+          spinnerClassName="text-indigo-300"
         />
+        
         {game.discount > 0 && (
           <div className="absolute top-3 right-3 bg-red-500 text-white font-bold text-sm px-2 py-1 rounded-md">
             -{game.discount}%
